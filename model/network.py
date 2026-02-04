@@ -38,18 +38,17 @@ class ChessPolicyNet(nn.Module):
     Policy network that predicts move probabilities from board positions.
     
     Architecture:
-    1. Input convolution: 14 planes → 128 channels
-    2. Residual tower: 6 residual blocks
+    1. Input convolution: 14 planes → 256 channels
+    2. Residual tower: 10 residual blocks
     3. Policy head: outputs logits for all possible moves
     
-    This is a modest architecture suitable for ~65k training examples.
-    Larger datasets could use more blocks/channels.
+    This architecture is sized for ~65k training examples.
     """
     
     def __init__(self, 
                  input_channels: int = 14,
-                 num_filters: int = 256,
-                 num_residual_blocks: int = 10,
+                 num_filters: int = 128,
+                 num_residual_blocks: int = 6,
                  num_moves: int = 4672):  # Will be set from move_encoder
         super().__init__()
         
@@ -175,11 +174,15 @@ class ChessMirrorModel:
     
     def save(self, path: str, **extra_info):
         """Save model checkpoint."""
+        # Get actual config from model
+        num_filters = self.model.input_conv.out_channels
+        num_residual_blocks = len(self.model.residual_blocks)
+        
         checkpoint = {
             'model_state_dict': self.model.state_dict(),
             'num_moves': self.model.num_moves,
-            'num_filters': 128,
-            'num_residual_blocks': 6,
+            'num_filters': num_filters,
+            'num_residual_blocks': num_residual_blocks,
             **extra_info
         }
         torch.save(checkpoint, path)

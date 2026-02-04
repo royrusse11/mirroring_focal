@@ -10,6 +10,7 @@ import chess
 import torch
 import numpy as np
 import pickle
+import random
 import sys
 from pathlib import Path
 from typing import Optional, Tuple, List
@@ -395,6 +396,7 @@ class ChessGUI:
         """Draw the chess board."""
         for rank in range(8):
             for file in range(8):
+                # a1 (file=0, rank=0) should be dark, so dark when (rank + file) is EVEN
                 is_light = (rank + file) % 2 == 1
                 color = LIGHT_SQUARE if is_light else DARK_SQUARE
                 
@@ -493,12 +495,19 @@ class ChessGUI:
         legal_moves = list(self.board.legal_moves)
         legal_move_mask = torch.zeros(1, self.move_encoder.vocab_size, dtype=torch.bool).to(self.device)
         
+        legal_moves_in_vocab = []
         for move in legal_moves:
             try:
                 idx = self.move_encoder.move_to_idx[move.uci()]
                 legal_move_mask[0, idx] = True
+                legal_moves_in_vocab.append(move)
             except KeyError:
                 pass  # Move not in vocabulary
+        
+        # Fallback: if no legal moves are in vocabulary, pick a random legal move
+        if not legal_moves_in_vocab:
+            print("Warning: No legal moves found in vocabulary, selecting random move")
+            return random.choice(legal_moves)
         
         # Get model prediction
         with torch.no_grad():

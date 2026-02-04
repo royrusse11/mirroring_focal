@@ -122,9 +122,11 @@ class MoveEncoder:
     """
     Encodes chess moves into indices and back.
     
-    We use a simple approach: enumerate all possible moves in UCI format.
-    There are ~1968 possible moves in chess (64 * 64 - duplicates + promotions).
-    We'll build the vocabulary from the actual moves in the dataset.
+    Pre-builds a complete vocabulary of all possible UCI moves:
+    - All square-to-square moves (excluding same-square)
+    - All pawn promotions (queen, rook, bishop, knight)
+    
+    Total vocabulary size is ~4200 moves.
     """
     
     def __init__(self):
