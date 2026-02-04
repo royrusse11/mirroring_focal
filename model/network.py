@@ -47,8 +47,8 @@ class ChessPolicyNet(nn.Module):
     
     def __init__(self, 
                  input_channels: int = 14,
-                 num_filters: int = 128,
-                 num_residual_blocks: int = 6,
+                 num_filters: int = 256,
+                 num_residual_blocks: int = 10,
                  num_moves: int = 4672):  # Will be set from move_encoder
         super().__init__()
         
