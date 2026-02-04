@@ -1,0 +1,18 @@
+# Chess Mirror Bot - Dependencies
+# Install with: pip install -r requirements.txt
+
+# Core ML
+torch>=2.0.0
+numpy>=1.24.0
+
+# Chess
+python-chess>=1.10.0
+
+# GUI
+pygame>=2.5.0
+
+# Data processing
+tqdm>=4.65.0
+
+# Optional: For training visualization
+# matplotlib>=3.7.0
